@@ -35,24 +35,39 @@ while True:
 
         # Handle mouse button down event
         elif event.type == MOUSEBUTTONDOWN:
-            mouse_pos = pygame.mouse.get_pos()
-            # Check if any of the cells is clicked
-            for cell in cells:
-                if cell.check_click(mouse_pos):
-                    if cell.color == (0, 0, 255):  # If the cell is blue
-                        if cell not in highlighted_cells:
-                            highlighted_cells.append(cell)  # Add the cell to the highlighted list
-                        line_active = True  # Start drawing the line
-                        cell.is_highlighted = True
-                        cell.line_end = mouse_pos  # Store the cursor position to draw the line
-                    else:
-                        # Reset line state if clicked on a non-blue cell
-                        line_active = False
-                        for highlighted in highlighted_cells:
-                            highlighted.is_highlighted = False
-                        highlighted_cells.clear()  # Clear highlighted cells
-                        for cell in cells:
-                            cell.line_end = None
+          mouse_pos = pygame.mouse.get_pos()
+          # Check if any of the cells is clicked
+          for cell in cells:
+              if cell.check_click(mouse_pos):
+                  if cell.color == BLUE:  # If the cell is blue
+                      if cell not in highlighted_cells:
+                          highlighted_cells.append(cell)  # Add the cell to the highlighted list
+                      line_active = True  # Start drawing the line
+                      cell.is_highlighted = True
+                      cell.line_end = mouse_pos  # Store the cursor position to draw the line
+                  elif cell.color == GRAY and highlighted_cells:  # If clicked on a gray cell and any blue cells are highlighted
+                      # Subtract from the first highlighted blue cell and gray cell
+                      if highlighted_cells:
+                          highlighted_cell = highlighted_cells[0]  # Get the first highlighted blue cell
+                          if highlighted_cell.counter > 0 and cell.counter > 0:
+                              amount_to_transfer = min(highlighted_cell.counter, cell.counter)
+                              highlighted_cell.counter -= amount_to_transfer
+                              cell.counter -= amount_to_transfer
+                      # Reset highlighting for all highlighted cells
+                      for highlighted in highlighted_cells:
+                          line_active = False
+                          highlighted.is_highlighted = False
+                          highlighted.line_end = None
+                      highlighted_cells.clear()  # Clear highlighted cells
+                      highlighted_cell = None  # Clear highlighted cell tracker
+                  else:
+                      # Reset line state if clicked on a non-blue cell
+                      line_active = False
+                      for highlighted in highlighted_cells:
+                          highlighted.is_highlighted = False
+                      highlighted_cells.clear()  # Clear highlighted cells
+                      for cell in cells:
+                          cell.line_end = None
 
         # Handle mouse motion event
         elif event.type == MOUSEMOTION:

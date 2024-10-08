@@ -99,3 +99,7 @@ class Cell:
         edge_y = self.position[1] + (self.radius + 5) * math.sin(angle)
         
         return (edge_x, edge_y)
+
+    def subtract(self, amount):
+        """Subtract from the counter without going below zero."""
+        self.counter = max(0, self.counter - amount)
