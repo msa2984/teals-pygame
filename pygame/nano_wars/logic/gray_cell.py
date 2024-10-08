@@ -1,5 +1,4 @@
 from models.cell import Cell
-from constants.color import BLUE
 
 def gray_cell_logic(highlighted_cells: list, line_active: bool, cell: Cell) -> bool:
     if highlighted_cells:
@@ -27,7 +26,7 @@ def gray_cell_logic(highlighted_cells: list, line_active: bool, cell: Cell) -> b
                 print("yo")  # This should now print if the counter goes negative
                 excess_amount = abs(cell.counter)  # Calculate the excess amount
                 cell.counter = 0  # Set gray cell counter to 0
-                cell.color = BLUE  # Change the gray cell's color to blue
+                cell.color = highlighted_cells[0].color  # Change the gray cell's color to blue
                 cell.counter += excess_amount  # Add excess amount to the new blue cell
                 
                 # Print to confirm the cell color change and the new counter value
