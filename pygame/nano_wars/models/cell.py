@@ -15,12 +15,13 @@ class Cell:
         self.font = pygame.font.SysFont(None, 48)
         self.text_color = (255, 255, 255)
         self.line_end = None  # Store the cursor position for the line
+        self.snapped_cell = None  # New attribute to track the snapped cell
         
     @property
     def center(self):
         return (self.position[0], self.position[1])
 
-    def draw(self, screen: Surface, current_time):
+    def draw(self, screen: Surface, current_time, cells):
         # Update the counter if 1 second has passed
         if current_time - self.last_update_time >= self.update_interval:
             self.counter += 1
@@ -42,6 +43,31 @@ class Cell:
 
             # Only draw the line if the line_end is outside the circle
             if distance_to_edge > self.radius:
+                # Check for collision with other circles
+                for cell in cells:  # Assuming 'cells' is accessible here
+                    if cell != self and cell.color != (0, 0, 255):  # Check only non-blue circles
+                        distance_to_other_center = pygame.math.Vector2(cell.center).distance_to(self.line_end)
+
+                        if distance_to_other_center <= cell.radius:
+                            # Snap the line_end to the center of the other circle
+                            self.line_end = cell.center
+                            self.snapped_cell = cell  # Track the snapped circle
+                            break  # Exit the loop once a collision is handled
+
+            # If snapped, check if the mouse is outside the snapped circle
+            if self.snapped_cell:
+                mouse_pos = pygame.mouse.get_pos()
+                distance_to_snapped = pygame.math.Vector2(self.snapped_cell.position).distance_to(mouse_pos)
+
+                if distance_to_snapped > self.snapped_cell.radius:
+                    self.line_end = mouse_pos  # Update line_end if mouse is outside the snapped circle
+                else:
+                    # Keep line_end at the snapped circle's center
+                    self.line_end = self.snapped_cell.center
+
+            # Redo the distance check after snapping
+            distance_to_edge = pygame.math.Vector2(self.center).distance_to(self.line_end)
+            if distance_to_edge > self.radius:
                 pygame.draw.line(screen, (255, 255, 255), edge_position, self.line_end, 2)
 
         # Render the counter as text inside the circle
@@ -49,6 +75,7 @@ class Cell:
         text_surface = self.font.render(number, True, self.text_color)
         text_rect = text_surface.get_rect(center=self.position)
         screen.blit(text_surface, text_rect)
+
 
     def check_click(self, mouse_pos):
         # Function to check if the mouse click is inside this circle

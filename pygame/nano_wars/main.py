@@ -16,8 +16,10 @@ screen = pygame.display.set_mode((width, height))
 # Create a list of circles
 cells = [
     Cell((150, 150), 50, (255, 0, 0)),  # Red circle at (150, 150)
+    Cell((600, 150), 50, (255, 0, 0)),  # Red circle at (150, 150)
+    Cell((500, 200), 40, (255, 0, 0)),  # Green circle at (500, 200)
     Cell((300, 300), 70, (0, 0, 255)),  # Blue circle at (300, 300)
-    Cell((500, 200), 40, (83, 83, 83))   # Green circle at (500, 200)
+    Cell((100, 300), 40, (0, 0, 255)),  # Blue circle at (300, 300)
 ]
 line_active = False  # Variable to track if the line is currently being drawn
 highlighted_cell = None  # Track which cell is currently highlighted
@@ -51,6 +53,7 @@ while True:
         # Handle mouse motion event
         elif event.type == MOUSEMOTION:
             if line_active and highlighted_cell:  # Only update if the line is active
+              if not highlighted_cell.snapped_cell:
                 mouse_pos = pygame.mouse.get_pos()
                 highlighted_cell.line_end = mouse_pos  # Update the end of the line to follow the cursor
 
@@ -67,9 +70,9 @@ while True:
     # Get the current time in milliseconds
     current_time = pygame.time.get_ticks()
 
-    # Draw all the cells
+    # Draw all the cells (circles)
     for cell in cells:
-        cell.draw(screen, current_time)
+        cell.draw(screen, current_time, cells)
 
     pygame.display.flip()  # Update the display
     fpsClock.tick(fps)  # Control the frame rate
