@@ -17,7 +17,7 @@ screen = pygame.display.set_mode((width, height))
 cells = [
     Cell((150, 150), 50, RED),  # Red circle at (150, 150)
     Cell((600, 150), 50, RED),  # Red circle at (600, 150)
-    Cell((500, 200), 40, GRAY, counter=20),  # Green circle at (500, 200)
+    Cell((500, 200), 40, GRAY, counter=3),  # Green circle at (500, 200)
     Cell((300, 300), 70, BLUE),  # Blue circle at (300, 300)
     Cell((100, 300), 40, BLUE),  # Blue circle at (100, 300)
 ]

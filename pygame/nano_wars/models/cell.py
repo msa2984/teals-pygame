@@ -101,5 +101,5 @@ class Cell:
         return (edge_x, edge_y)
 
     def subtract(self, amount):
-        """Subtract from the counter without going below zero."""
-        self.counter = max(0, self.counter - amount)
+        """Subtract from the counter, allowing it to go below zero."""
+        self.counter -= amount  # Simply subtract the amount without constraints
