@@ -3,6 +3,7 @@ import pygame
 from pygame.locals import *
 from models.cell import Cell
 from constants.color import RED, BLUE, GRAY
+from logic.gray_cell import gray_cell_logic
 
 pygame.init()
 
@@ -46,20 +47,7 @@ while True:
                       cell.is_highlighted = True
                       cell.line_end = mouse_pos  # Store the cursor position to draw the line
                   elif cell.color == GRAY and highlighted_cells:  # If clicked on a gray cell and any blue cells are highlighted
-                      # Subtract from the first highlighted blue cell and gray cell
-                      if highlighted_cells:
-                          highlighted_cell = highlighted_cells[0]  # Get the first highlighted blue cell
-                          if highlighted_cell.counter > 0 and cell.counter > 0:
-                              amount_to_transfer = min(highlighted_cell.counter, cell.counter)
-                              highlighted_cell.counter -= amount_to_transfer
-                              cell.counter -= amount_to_transfer
-                      # Reset highlighting for all highlighted cells
-                      for highlighted in highlighted_cells:
-                          line_active = False
-                          highlighted.is_highlighted = False
-                          highlighted.line_end = None
-                      highlighted_cells.clear()  # Clear highlighted cells
-                      highlighted_cell = None  # Clear highlighted cell tracker
+                     line_active = gray_cell_logic(highlighted_cells=highlighted_cells, line_active=line_active, cell=cell)
                   else:
                       # Reset line state if clicked on a non-blue cell
                       line_active = False
