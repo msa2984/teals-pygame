@@ -23,7 +23,21 @@ cells = [
 ]
 
 line_active = False  # Variable to track if the line is currently being drawn
+dragging = False
+start_pos = None
 highlighted_cells = []  # List to track which cells are currently highlighted
+selection_rect = None
+
+def check_selection(cells, selection_rect):
+    selected_cells = []
+    
+    for cell in cells:
+        if cell.color == BLUE:
+            # Check if the cell is within the selection rectangle
+            if selection_rect.colliderect(cell.get_rect()):  # Use get_rect() method of Cell
+                selected_cells.append(cell)
+    
+    return selected_cells
 
 # Game loop.
 while True:
@@ -37,10 +51,15 @@ while True:
         # Handle mouse button down event
         elif event.type == MOUSEBUTTONDOWN:
           mouse_pos = pygame.mouse.get_pos()
+          dragging = True
+          start_pos = pygame.mouse.get_pos()  # Get the starting position
+          selection_rect = pygame.Rect(start_pos, (0, 0))  # Initialize rectangle
           # Check if any of the cells is clicked
           for cell in cells:
               if cell.check_click(mouse_pos):
+                  print(cell)
                   if cell.color == BLUE:  # If the cell is blue
+                      dragging = False
                       if cell not in highlighted_cells:
                           highlighted_cells.append(cell)  # Add the cell to the highlighted list
                       line_active = True  # Start drawing the line
@@ -50,17 +69,14 @@ while True:
                      line_active = gray_cell_logic(highlighted_cells=highlighted_cells, line_active=line_active, cell=cell)
                   elif cell.color == RED and highlighted_cells:
                     line_active = gray_cell_logic(highlighted_cells=highlighted_cells, line_active=line_active, cell=cell)
-                  else:
-                      # Reset line state if clicked on a non-blue cell
-                      line_active = False
-                      for highlighted in highlighted_cells:
-                          highlighted.is_highlighted = False
-                      highlighted_cells.clear()  # Clear highlighted cells
-                      for cell in cells:
-                          cell.line_end = None
 
         # Handle mouse motion event
         elif event.type == MOUSEMOTION:
+            if dragging:
+                  # Update the rectangle size as the mouse moves
+                  current_pos = pygame.mouse.get_pos()
+                  selection_rect.width = current_pos[0] - start_pos[0]
+                  selection_rect.height = current_pos[1] - start_pos[1]
             if line_active and highlighted_cells:  # Only update if the line is active
                 mouse_pos = pygame.mouse.get_pos()
                 # Update the end of the line for all highlighted cells
@@ -71,12 +87,28 @@ while True:
         # Handle mouse button up event
         elif event.type == MOUSEBUTTONUP:
             mouse_pos = pygame.mouse.get_pos()
-            if not any(cell.check_click(mouse_pos) for cell in cells):
-                line_active = False  # Stop drawing the line when clicked outside
-                for highlighted in highlighted_cells:
-                    highlighted.is_highlighted = False  # Remove highlighting
-                    highlighted.line_end = None  # Stop drawing the line
-                highlighted_cells.clear()  # Clear the highlighted cells tracker
+            dragging = False
+
+            # Check which cells are selected based on the selection rectangle
+            selected_cells = check_selection(cells, selection_rect)
+
+            # If the mouse clicked on any of the cells, highlight them
+            if selected_cells:
+                highlighted_cells.extend(selected_cells)  # Add newly selected cells to the highlighted list
+                for cell in selected_cells:
+                    cell.is_highlighted = True  # Set highlight state
+                    cell.line_end = mouse_pos  # Store the cursor position to draw the line
+
+                line_active = True  # Activate line drawing if any cells are highlighted
+            else:
+                # If clicked outside of any cells, clear highlighted cells only if no cell was clicked
+                if not any(cell.check_click(mouse_pos) for cell in cells):
+                    line_active = False  # Stop drawing the line when clicked outside
+                    for highlighted in highlighted_cells:
+                        highlighted.is_highlighted = False  # Remove highlighting
+                        highlighted.line_end = None  # Stop drawing the line
+                    highlighted_cells.clear()  # Clear the highlighted cells tracker
+
 
     # Get the current time in milliseconds
     current_time = pygame.time.get_ticks()
@@ -86,6 +118,9 @@ while True:
         cell.draw(screen, current_time, cells)
         if cell.counter == 0:
            cell.color = GRAY
-
+    # Draw the selection rectangle if dragging
+    if dragging and selection_rect:
+        pygame.draw.rect(screen, (173, 216, 230), selection_rect, 2)  # Light blue outline
+  
     pygame.display.flip()  # Update the display
     fpsClock.tick(fps)  # Control the frame rate

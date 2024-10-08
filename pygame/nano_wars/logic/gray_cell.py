@@ -31,13 +31,6 @@ def gray_cell_logic(highlighted_cells: list, line_active: bool, cell: Cell) -> b
                 
                 # Print to confirm the cell color change and the new counter value
                 print(f"Gray cell became blue with counter: {cell.counter}")
-
-        # Reset highlighting for all highlighted cells
-        for highlighted in highlighted_cells:
-            highlighted.is_highlighted = False
-            highlighted.line_end = None
-        
-        highlighted_cells.clear()  # Clear highlighted cells
         
         return False  # Indicate that the line is not active anymore
     return line_active  # Return the current state if nothing happens

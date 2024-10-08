@@ -21,6 +21,11 @@ class Cell:
     @property
     def center(self):
         return (self.position[0], self.position[1])
+    
+    def get_rect(self):
+        """Returns the rectangle representing the cell."""
+        return pygame.Rect(self.position[0] - self.radius, self.position[1] - self.radius,
+                           self.radius * 2, self.radius * 2)
 
     def draw(self, screen: Surface, current_time, cells):
         # Update the counter if 1 second has passed and if the cell is blue
