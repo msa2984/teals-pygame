@@ -2,6 +2,7 @@ import sys
 import pygame
 from pygame.locals import *
 from models.cell import Cell
+from constants.color import RED, BLUE, GRAY
 
 pygame.init()
 
@@ -13,11 +14,11 @@ screen = pygame.display.set_mode((width, height))
 
 # Create a list of circles
 cells = [
-    Cell((150, 150), 50, (255, 0, 0)),  # Red circle at (150, 150)
-    Cell((600, 150), 50, (255, 0, 0)),  # Red circle at (600, 150)
-    Cell((500, 200), 40, (255, 0, 0)),  # Green circle at (500, 200)
-    Cell((300, 300), 70, (0, 0, 255)),  # Blue circle at (300, 300)
-    Cell((100, 300), 40, (0, 0, 255)),  # Blue circle at (100, 300)
+    Cell((150, 150), 50, RED),  # Red circle at (150, 150)
+    Cell((600, 150), 50, RED),  # Red circle at (600, 150)
+    Cell((500, 200), 40, GRAY, counter=20),  # Green circle at (500, 200)
+    Cell((300, 300), 70, BLUE),  # Blue circle at (300, 300)
+    Cell((100, 300), 40, BLUE),  # Blue circle at (100, 300)
 ]
 
 line_active = False  # Variable to track if the line is currently being drawn
@@ -78,12 +79,6 @@ while True:
     # Draw all the cells (circles)
     for cell in cells:
         cell.draw(screen, current_time, cells)
-
-    # # Draw lines for all highlighted cells
-    # for highlighted in highlighted_cells:
-    #     if highlighted.line_end:
-    #         edge_position = highlighted.get_edge_position(highlighted.line_end)
-    #         pygame.draw.line(screen, (255, 255, 255), edge_position, highlighted.line_end, 2)
 
     pygame.display.flip()  # Update the display
     fpsClock.tick(fps)  # Control the frame rate

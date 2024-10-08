@@ -1,17 +1,18 @@
 import pygame
 from pygame import *
 import math
+from constants.color import BLUE, RED, GRAY
 
 class Cell:
-    def __init__(self, position, radius, color):
+    def __init__(self, position, radius, color, counter=0):
         self.position = position  # (x, y)
         self.radius = radius
         self.color = color
         self.highlight_color = (173, 216, 230)
         self.is_highlighted = False
-        self.counter = 0
+        self.counter = counter
         self.last_update_time = 0
-        self.update_interval = 1500  # 1.5 second
+        self.update_interval = 2000  # 2.0 second
         self.font = pygame.font.SysFont(None, 48)
         self.text_color = (255, 255, 255)
         self.line_end = None  # Store the cursor position for the line
@@ -22,11 +23,12 @@ class Cell:
         return (self.position[0], self.position[1])
 
     def draw(self, screen: Surface, current_time, cells):
-        # Update the counter if 1 second has passed
-        if current_time - self.last_update_time >= self.update_interval:
-            self.counter += 1
-            self.last_update_time = current_time
-        
+        # Update the counter if 1 second has passed and if the cell is blue
+        if self.color == BLUE or self.color == RED:
+            if current_time - self.last_update_time >= self.update_interval:
+                self.counter += 1
+                self.last_update_time = current_time
+
         # Draw the circle
         pygame.draw.circle(screen, self.color, self.position, self.radius)
 
@@ -37,7 +39,7 @@ class Cell:
         # Draw the line from the edge of the circle to the cursor
         if self.line_end:
             edge_position = self.get_edge_position(self.line_end)
-            
+
             # Calculate the distance from the circle's center to the line_end position
             distance_to_edge = pygame.math.Vector2(self.center).distance_to(self.line_end)
 
@@ -75,6 +77,7 @@ class Cell:
         text_surface = self.font.render(number, True, self.text_color)
         text_rect = text_surface.get_rect(center=self.position)
         screen.blit(text_surface, text_rect)
+
 
 
     def check_click(self, mouse_pos):
