@@ -10,7 +10,7 @@ pygame.init()
 fps = 60
 fpsClock = pygame.time.Clock()
 
-width, height = 640, 480
+width, height = 1920, 1080
 screen = pygame.display.set_mode((width, height))
 
 # Create a list of circles
@@ -48,6 +48,8 @@ while True:
                       cell.line_end = mouse_pos  # Store the cursor position to draw the line
                   elif cell.color == GRAY and highlighted_cells:  # If clicked on a gray cell and any blue cells are highlighted
                      line_active = gray_cell_logic(highlighted_cells=highlighted_cells, line_active=line_active, cell=cell)
+                  elif cell.color == RED and highlighted_cells:
+                    line_active = gray_cell_logic(highlighted_cells=highlighted_cells, line_active=line_active, cell=cell)
                   else:
                       # Reset line state if clicked on a non-blue cell
                       line_active = False
