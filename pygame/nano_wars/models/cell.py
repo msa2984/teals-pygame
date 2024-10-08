@@ -15,6 +15,10 @@ class Cell:
         self.font = pygame.font.SysFont(None, 48)
         self.text_color = (255, 255, 255)
         self.line_end = None  # Store the cursor position for the line
+        
+    @property
+    def center(self):
+        return (self.position[0], self.position[1])
 
     def draw(self, screen: Surface, current_time):
         # Update the counter if 1 second has passed
@@ -32,7 +36,13 @@ class Cell:
         # Draw the line from the edge of the circle to the cursor
         if self.line_end:
             edge_position = self.get_edge_position(self.line_end)
-            pygame.draw.line(screen, (255, 255, 255), edge_position, self.line_end, 2)
+            
+            # Calculate the distance from the circle's center to the line_end position
+            distance_to_edge = pygame.math.Vector2(self.center).distance_to(self.line_end)
+
+            # Only draw the line if the line_end is outside the circle
+            if distance_to_edge > self.radius:
+                pygame.draw.line(screen, (255, 255, 255), edge_position, self.line_end, 2)
 
         # Render the counter as text inside the circle
         number = str(self.counter)
