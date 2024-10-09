@@ -19,7 +19,7 @@ cells = [
     Cell((150, 150), 50, RED, counter=1),  # Red circle at (150, 150)
     Cell((600, 150), 50, RED, counter=1),  # Red circle at (600, 150)
     Cell((500, 200), 40, GRAY, counter=3),  # Green circle at (500, 200)
-    Cell((300, 300), 120, BLUE, counter=1),  # Blue circle at (300, 300)
+    Cell((300, 300), 90, BLUE, counter=1),  # Blue circle at (300, 300)
     Cell((100, 300), 40, BLUE, counter=1),  # Blue circle at (100, 300)
 ]
 
@@ -60,7 +60,6 @@ while True:
                 if cell.check_click(mouse_pos):
                     print(cell)
                     if cell.color == BLUE:  # If the cell is blue
-                        dragging = True  # Allow dragging over blue cells
                         selection_rect = None  # Do not draw selection rectangle if starting inside a blue cell
                         if cell not in highlighted_cells and selection_rect is None and len(highlighted_cells) == 0:
                             highlighted_cells.append(cell)  # Add the cell to the highlighted list
@@ -79,12 +78,19 @@ while True:
 
         # Handle mouse motion event
         elif event.type == MOUSEMOTION:
+            press_start_time = 0
+            press_duration = 0
             if dragging:
                 current_pos = pygame.mouse.get_pos()
-
+                
+                if pygame.mouse.get_pressed():  # Left mouse button
+                    press_duration = pygame.time.get_ticks() - press_start_time  # Calculate the duration
+                    print(f"Press start time: {press_start_time}")
+                    print(press_duration)
+                
                 # Highlight any blue cells being hovered over during dragging
                 for cell in cells:
-                    if cell.color == BLUE and cell.check_click(current_pos) and cell not in highlighted_cells and selection_rect is None:
+                    if cell.color == BLUE and cell.check_click(current_pos) and cell not in highlighted_cells and selection_rect is None and press_duration > 1000:
                         highlighted_cells.append(cell)  # Highlight the cell
                         cell.is_highlighted = True
                         cell.line_end = current_pos  # Optionally, update the line end if needed

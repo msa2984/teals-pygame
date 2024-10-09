@@ -12,7 +12,6 @@ class Cell:
         self.is_highlighted = False
         self.counter = counter
         self.last_update_time = 0
-        self.update_interval = 2000  # 2.0 second
         self.font = pygame.font.SysFont(None, 48)
         self.text_color = (255, 255, 255)
         self.line_end = None  # Store the cursor position for the line
@@ -29,7 +28,7 @@ class Cell:
 
     def draw(self, screen: Surface, current_time, cells):
         # Update the counter if the cell is blue or red
-        if self.color == BLUE or self.color == RED:
+        if self.color in (BLUE, RED):
             self.update_counter(current_time)  # Call the new counter update method
 
         # Draw the circle
@@ -85,7 +84,7 @@ class Cell:
         """Update the counter based on the radius of the cell."""
         # Calculate the new update interval based on the radius
         # Smaller radius -> longer interval; larger radius -> shorter interval
-        dynamic_update_interval = max(200, 1750 - self.radius * 10)  # Adjust scaling as needed
+        dynamic_update_interval = max(200, 2250 - self.radius * 10)  # Adjust scaling as needed
 
         # If the cell is blue or red and the time elapsed is greater than the update interval
         if self.color in (BLUE, RED):
