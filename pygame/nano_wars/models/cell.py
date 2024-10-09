@@ -89,7 +89,15 @@ class Cell:
         # Function to check if the mouse click is inside this circle
         dx = mouse_pos[0] - self.position[0]
         dy = mouse_pos[1] - self.position[1]
-        return (dx * dx + dy * dy) <= (self.radius * self.radius)
+        inside = (dx * dx + dy * dy) <= (self.radius * self.radius)
+
+        # Only print when there's a positive click inside or debug when it's outside
+        if inside:
+            print(f"Mouse inside circle at {self.position}")
+        else:
+            print(f"Mouse NOT INSIDE circle at {self.position}")
+        return inside
+
 
     def get_edge_position(self, mouse_pos):
         """Calculate the point just outside the edge of the circle based on the cursor position."""
