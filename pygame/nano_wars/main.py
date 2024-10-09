@@ -41,6 +41,10 @@ def check_selection(cells, selection_rect):
     return selected_cells
 
 # Game loop.
+press_start_time = None
+press_duration = 0
+
+# Game loop.
 while True:
     screen.fill((0, 0, 0))  # Fill screen with black
 
@@ -55,6 +59,8 @@ while True:
             dragging = True
             start_pos = pygame.mouse.get_pos()  # Get the starting position
             selection_rect = None  # Only create the rectangle if dragging outside cells
+            press_start_time = pygame.time.get_ticks()  # Record the start time
+            press_duration = 0  # Reset duration when starting to drag
             # Check if any of the cells is clicked
             for cell in cells:
                 if cell.check_click(mouse_pos):
@@ -78,19 +84,17 @@ while True:
 
         # Handle mouse motion event
         elif event.type == MOUSEMOTION:
-            press_start_time = 0
-            press_duration = 0
             if dragging:
                 current_pos = pygame.mouse.get_pos()
                 
-                if pygame.mouse.get_pressed():  # Left mouse button
+                # Calculate the press duration
+                if press_start_time is not None:  # Ensure it has been set
                     press_duration = pygame.time.get_ticks() - press_start_time  # Calculate the duration
-                    print(f"Press start time: {press_start_time}")
                     print(press_duration)
                 
                 # Highlight any blue cells being hovered over during dragging
                 for cell in cells:
-                    if cell.color == BLUE and cell.check_click(current_pos) and cell not in highlighted_cells and selection_rect is None and press_duration > 1000:
+                    if cell.color == BLUE and cell.check_click(current_pos) and cell not in highlighted_cells and selection_rect is None and press_duration > 100:
                         highlighted_cells.append(cell)  # Highlight the cell
                         cell.is_highlighted = True
                         cell.line_end = current_pos  # Optionally, update the line end if needed
@@ -106,16 +110,20 @@ while True:
                 for highlighted in highlighted_cells:
                     if not highlighted.snapped_cell:
                         highlighted.line_end = mouse_pos  # Update the end of the line to follow the cursor
-
         # Handle mouse button up event
         elif event.type == MOUSEBUTTONUP:
             mouse_pos = pygame.mouse.get_pos()
             dragging = False
-            if selection_rect != None:
-            # Check which cells are selected based on the selection rectangle
+            
+            # Reset press duration and start time
+            press_start_time = None  # Reset start time
+            press_duration = 0  # Reset duration
+
+            if selection_rect is not None:
+                # Check which cells are selected based on the selection rectangle
                 selected_cells = check_selection(cells, selection_rect)
 
-            # If the mouse clicked on any of the cells, highlight them
+                # If the mouse clicked on any of the cells, highlight them
                 if selected_cells:
                     highlighted_cells.extend(selected_cells)  # Add newly selected cells to the highlighted list
                     for cell in selected_cells:
@@ -131,7 +139,6 @@ while True:
                             highlighted.is_highlighted = False  # Remove highlighting
                             highlighted.line_end = None  # Stop drawing the line
                         highlighted_cells.clear()  # Clear the highlighted cells tracker
-
 
     # Get the current time in milliseconds
     current_time = pygame.time.get_ticks()
