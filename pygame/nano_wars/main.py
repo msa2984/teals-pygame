@@ -61,18 +61,19 @@ while True:
                     if cell.color == BLUE:  # If the cell is blue
                         dragging = True  # Allow dragging over blue cells
                         selection_rect = None  # Do not draw selection rectangle if starting inside a blue cell
-                        if cell not in highlighted_cells and selection_rect is None:
+                        if cell not in highlighted_cells and selection_rect is None and len(highlighted_cells) == 0:
                             highlighted_cells.append(cell)  # Add the cell to the highlighted list
                             line_active = True  # Start drawing the line
                             cell.is_highlighted = True
                             cell.line_end = mouse_pos  # Store the cursor position to draw the line
+                        elif len(highlighted_cells) > 1:
+                            line_active = gray_cell_logic(highlighted_cells=highlighted_cells, line_active=line_active, cell=cell)
                     elif cell.color == GRAY and highlighted_cells:  # If clicked on a gray cell and any blue cells are highlighted
                         line_active = gray_cell_logic(highlighted_cells=highlighted_cells, line_active=line_active, cell=cell)
                     elif cell.color == RED and highlighted_cells:
                         line_active = gray_cell_logic(highlighted_cells=highlighted_cells, line_active=line_active, cell=cell)
                     break  # Stop checking other cells once a valid click inside a cell is detected
             else:
-                print("hi")
                 selection_rect = pygame.Rect(start_pos, (0, 0))  # Initialize rectangle if clicked outside cells
 
         # Handle mouse motion event
