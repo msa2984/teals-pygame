@@ -19,7 +19,7 @@ cells = [
     Cell((150, 150), 50, RED, counter=1),  # Red circle at (150, 150)
     Cell((600, 150), 50, RED, counter=1),  # Red circle at (600, 150)
     Cell((500, 200), 40, GRAY, counter=3),  # Green circle at (500, 200)
-    Cell((300, 300), 70, BLUE, counter=1),  # Blue circle at (300, 300)
+    Cell((300, 300), 120, BLUE, counter=1),  # Blue circle at (300, 300)
     Cell((100, 300), 40, BLUE, counter=1),  # Blue circle at (100, 300)
 ]
 
@@ -135,8 +135,18 @@ while True:
         cell.draw(screen, current_time, cells)
         if cell.counter == 0:
            cell.color = GRAY
-    # Draw the selection rectangle if dragging
     if dragging and selection_rect:
+        # Get the current mouse position
+        current_pos = pygame.mouse.get_pos()
+        
+        # Calculate the top-left corner and size of the rectangle
+        x1, y1 = start_pos
+        x2, y2 = current_pos
+        
+        # Determine the rectangle's position and size
+        selection_rect = pygame.Rect(min(x1, x2), min(y1, y2), abs(x2 - x1), abs(y2 - y1))
+    
+        # Draw the selection rectangle
         pygame.draw.rect(screen, (173, 216, 230), selection_rect, 2)  # Light blue outline
   
     pygame.display.flip()  # Update the display

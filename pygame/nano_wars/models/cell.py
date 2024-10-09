@@ -28,11 +28,9 @@ class Cell:
                            self.radius * 2, self.radius * 2)
 
     def draw(self, screen: Surface, current_time, cells):
-        # Update the counter if 1 second has passed and if the cell is blue
+        # Update the counter if the cell is blue or red
         if self.color == BLUE or self.color == RED:
-            if current_time - self.last_update_time >= self.update_interval:
-                self.counter += 1
-                self.last_update_time = current_time
+            self.update_counter(current_time)  # Call the new counter update method
 
         # Draw the circle
         pygame.draw.circle(screen, self.color, self.position, self.radius)
@@ -83,7 +81,19 @@ class Cell:
         text_rect = text_surface.get_rect(center=self.position)
         screen.blit(text_surface, text_rect)
 
+    def update_counter(self, current_time):
+        """Update the counter based on the radius of the cell."""
+        # Calculate the new update interval based on the radius
+        # Smaller radius -> longer interval; larger radius -> shorter interval
+        dynamic_update_interval = max(200, 1750 - self.radius * 10)  # Adjust scaling as needed
 
+        # If the cell is blue or red and the time elapsed is greater than the update interval
+        if self.color in (BLUE, RED):
+            time_elapsed = current_time - self.last_update_time
+            
+            if time_elapsed >= dynamic_update_interval:
+                self.counter += 1  # Increment by 1
+                self.last_update_time = current_time  # Update last_update_time
 
     def check_click(self, mouse_pos):
         # Function to check if the mouse click is inside this circle
