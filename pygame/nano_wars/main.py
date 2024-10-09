@@ -97,7 +97,8 @@ while True:
                     if cell.color == BLUE and cell.check_click(current_pos) and cell not in highlighted_cells and selection_rect is None and press_duration > 100:
                         highlighted_cells.append(cell)  # Highlight the cell
                         cell.is_highlighted = True
-                        cell.line_end = current_pos  # Optionally, update the line end if needed
+                        line_active = True
+                        cell.line_end = mouse_pos  # Optionally, update the line end if needed
 
                 # Only draw the rectangle if selection_rect is not None (i.e., not dragging over cells)
                 if selection_rect is not None:
@@ -128,6 +129,7 @@ while True:
                     highlighted_cells.extend(selected_cells)  # Add newly selected cells to the highlighted list
                     for cell in selected_cells:
                         cell.is_highlighted = True  # Set highlight state
+                        print("HIGHLIGHT 2")
                         cell.line_end = mouse_pos  # Store the cursor position to draw the line
 
                     line_active = True  # Activate line drawing if any cells are highlighted
