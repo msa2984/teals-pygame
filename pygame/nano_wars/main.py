@@ -2,6 +2,7 @@ import sys
 import pygame
 from pygame.locals import *
 from models.cell import Cell
+from models.mini_cell import MiniCell, spawn_and_move_mini_cells
 from constants.color import RED, BLUE, GRAY
 from logic.enemy_cell import enemy_cell_logic
 from logic.friendly_cell import friendly_cell_logic
@@ -28,6 +29,7 @@ dragging = False
 start_pos = None
 highlighted_cells = []  # List to track which cells are currently highlighted
 selection_rect = None
+mini_cells = []  # List to track the mini cells
 
 def check_selection(cells, selection_rect):
     selected_cells = []
@@ -73,11 +75,14 @@ while True:
                             cell.is_highlighted = True
                             cell.line_end = mouse_pos  # Store the cursor position to draw the line
                         elif len(highlighted_cells) >= 1:
+                            spawn_and_move_mini_cells(highlighted_cells, cell, mini_cells)
                             line_active = friendly_cell_logic(highlighted_cells=highlighted_cells, line_active=line_active, cell=cell)
                     elif cell.color == GRAY and highlighted_cells:  # If clicked on a gray cell and any blue cells are highlighted
                         line_active = enemy_cell_logic(highlighted_cells=highlighted_cells, line_active=line_active, cell=cell)
+                        spawn_and_move_mini_cells(highlighted_cells, cell, mini_cells)
                     elif cell.color == RED and highlighted_cells:
                         line_active = enemy_cell_logic(highlighted_cells=highlighted_cells, line_active=line_active, cell=cell)
+                        spawn_and_move_mini_cells(highlighted_cells, cell, mini_cells)
                     break  # Stop checking other cells once a valid click inside a cell is detected
             else:
                 selection_rect = pygame.Rect(start_pos, (0, 0))  # Initialize rectangle if clicked outside cells
@@ -144,7 +149,13 @@ while True:
 
     # Get the current time in milliseconds
     current_time = pygame.time.get_ticks()
-
+    
+    for mini_cell in mini_cells[:]:
+        mini_cell.move()
+        mini_cell.draw(screen)
+        if mini_cell.reached_target():
+            mini_cells.remove(mini_cell)
+        
     # Draw all the cells (circles)
     for cell in cells:
         cell.draw(screen, current_time, cells)
