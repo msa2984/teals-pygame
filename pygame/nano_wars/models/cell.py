@@ -52,7 +52,7 @@ class Cell:
             if distance_to_edge > self.radius:
                 # Check for collision with other circles
                 for cell in cells:  # Assuming 'cells' is accessible here
-                    if cell != self and cell.color != (0, 0, 255):  # Check only non-blue circles
+                    if cell != self:  # Check only non-blue circles
                         distance_to_other_center = pygame.math.Vector2(cell.center).distance_to(self.line_end)
 
                         if distance_to_other_center <= cell.radius:

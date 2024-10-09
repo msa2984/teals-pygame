@@ -3,7 +3,8 @@ import pygame
 from pygame.locals import *
 from models.cell import Cell
 from constants.color import RED, BLUE, GRAY
-from logic.gray_cell import gray_cell_logic
+from logic.enemy_cell import enemy_cell_logic
+from logic.friendly_cell import friendly_cell_logic
 
 pygame.init()
 
@@ -66,12 +67,12 @@ while True:
                             line_active = True  # Start drawing the line
                             cell.is_highlighted = True
                             cell.line_end = mouse_pos  # Store the cursor position to draw the line
-                        elif len(highlighted_cells) > 1:
-                            line_active = gray_cell_logic(highlighted_cells=highlighted_cells, line_active=line_active, cell=cell)
+                        elif len(highlighted_cells) >= 1:
+                            line_active = friendly_cell_logic(highlighted_cells=highlighted_cells, line_active=line_active, cell=cell)
                     elif cell.color == GRAY and highlighted_cells:  # If clicked on a gray cell and any blue cells are highlighted
-                        line_active = gray_cell_logic(highlighted_cells=highlighted_cells, line_active=line_active, cell=cell)
+                        line_active = enemy_cell_logic(highlighted_cells=highlighted_cells, line_active=line_active, cell=cell)
                     elif cell.color == RED and highlighted_cells:
-                        line_active = gray_cell_logic(highlighted_cells=highlighted_cells, line_active=line_active, cell=cell)
+                        line_active = enemy_cell_logic(highlighted_cells=highlighted_cells, line_active=line_active, cell=cell)
                     break  # Stop checking other cells once a valid click inside a cell is detected
             else:
                 selection_rect = pygame.Rect(start_pos, (0, 0))  # Initialize rectangle if clicked outside cells

@@ -1,6 +1,6 @@
 from models.cell import Cell
 
-def gray_cell_logic(highlighted_cells: list, line_active: bool, cell: Cell) -> bool:
+def enemy_cell_logic(highlighted_cells: list, line_active: bool, cell: Cell) -> bool:
     if highlighted_cells:
         total_transfer = 0  # Initialize total transfer amount
 
