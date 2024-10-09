@@ -107,21 +107,21 @@ while True:
                 selected_cells = check_selection(cells, selection_rect)
 
             # If the mouse clicked on any of the cells, highlight them
-            if selected_cells:
-                highlighted_cells.extend(selected_cells)  # Add newly selected cells to the highlighted list
-                for cell in selected_cells:
-                    cell.is_highlighted = True  # Set highlight state
-                    cell.line_end = mouse_pos  # Store the cursor position to draw the line
+                if selected_cells:
+                    highlighted_cells.extend(selected_cells)  # Add newly selected cells to the highlighted list
+                    for cell in selected_cells:
+                        cell.is_highlighted = True  # Set highlight state
+                        cell.line_end = mouse_pos  # Store the cursor position to draw the line
 
-                line_active = True  # Activate line drawing if any cells are highlighted
-            else:
-                # If clicked outside of any cells, clear highlighted cells only if no cell was clicked
-                if not any(cell.check_click(mouse_pos) for cell in cells):
-                    line_active = False  # Stop drawing the line when clicked outside
-                    for highlighted in highlighted_cells:
-                        highlighted.is_highlighted = False  # Remove highlighting
-                        highlighted.line_end = None  # Stop drawing the line
-                    highlighted_cells.clear()  # Clear the highlighted cells tracker
+                    line_active = True  # Activate line drawing if any cells are highlighted
+                else:
+                    # If clicked outside of any cells, clear highlighted cells only if no cell was clicked
+                    if not any(cell.check_click(mouse_pos) for cell in cells):
+                        line_active = False  # Stop drawing the line when clicked outside
+                        for highlighted in highlighted_cells:
+                            highlighted.is_highlighted = False  # Remove highlighting
+                            highlighted.line_end = None  # Stop drawing the line
+                        highlighted_cells.clear()  # Clear the highlighted cells tracker
 
 
     # Get the current time in milliseconds
