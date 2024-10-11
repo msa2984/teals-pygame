@@ -1,6 +1,5 @@
 from models.cell import Cell
 from models.mini_cell import MiniCell, spawn_and_move_mini_cells
-from models.transfer import Transfer
 from pygame import *
 
 # def friendly_cell_logic(highlighted_cells: list, line_active: bool, cell: Cell, mini_cells: MiniCell, screen: Surface) -> bool:
@@ -37,8 +36,7 @@ from pygame import *
 #     return line_active  # Return the current state if nothing happens
 
 # This function should handle the transfer logic only
-def handle_transfer(highlighted_cells, target_cell, mini_cells) -> list[Transfer]:
-    transfer_obj_list = []  # List to store transfer objects
+def handle_transfer(highlighted_cells, target_cell, mini_cells) -> None:
     
     for highlighted in highlighted_cells:
         if highlighted.counter >= 2:
@@ -46,11 +44,6 @@ def handle_transfer(highlighted_cells, target_cell, mini_cells) -> list[Transfer
             spawn_and_move_mini_cells(highlighted, target_cell, mini_cells, transfer_total=transfer_amount)  # Spawn mini-cells
             
             highlighted.counter -= transfer_amount
-
-            # Create a Transfer object and append to the list
-            # transfer_obj = Transfer(target_count=transfer_amount, target_cell=target_cell, source_minicell=mini_cell, distance=mini_cell.distance)
-            # transfer_obj_list.append(transfer_obj)
-    return transfer_obj_list  # Return the list of Transfer objects
 
 # This function should manage the movement and drawing of mini-cells
 def update_mini_cells(mini_cells: list[MiniCell], screen):

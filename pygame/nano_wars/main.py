@@ -77,9 +77,7 @@ while True:
                             cell.line_end = mouse_pos  # Store the cursor position to draw the line
                         elif len(highlighted_cells) >= 1:
                             # In your game loop, you now separate the transfer logic from mini-cell updates
-                            result = handle_transfer(highlighted_cells, cell, mini_cells)
-                            for item in result:
-                                transfer_list.append(item)
+                            handle_transfer(highlighted_cells, cell, mini_cells)
                     elif cell.color == GRAY and highlighted_cells:  # If clicked on a gray cell and any blue cells are highlighted
                         # line_active = enemy_cell_logic(highlighted_cells=highlighted_cells, line_active=line_active, cell=cell)
                         # spawn_and_move_mini_cells(highlighted_cells, cell, mini_cells)
@@ -152,21 +150,6 @@ while True:
                         highlighted_cells.clear()  # Clear the highlighted cells tracker
                         
     update_mini_cells(mini_cells, screen)
-        
-    # # In the update/draw section of your game loop
-    # if update_mini_cells(mini_cells, screen):
-    #     # Sort the transfer_list by distance (ascending, so closer items come first)
-    #     transfer_list = sorted(transfer_list, key=lambda cell: cell.distance)
-        
-    #     if transfer_list:  # Ensure the list is not empty
-    #         # Apply target_count to the closest cell (first in the list)
-    #         closest_transfer = transfer_list[0]
-    #         closest_transfer.target_cell.counter += closest_transfer.target_count
-    #         print(f"Updated cell: {closest_transfer.target_cell}, Transfer amount: {closest_transfer.target_count}, Distance: {closest_transfer.distance}")
-            
-    #         # Remove the processed transfer from the list
-    #         transfer_list.pop(0)
-
 
     # Get the current time in milliseconds
     current_time = pygame.time.get_ticks()
