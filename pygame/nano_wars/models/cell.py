@@ -86,13 +86,13 @@ class Cell:
         # Smaller radius -> longer interval; larger radius -> shorter interval
         dynamic_update_interval = max(200, 2250 - self.radius * 10)  # Adjust scaling as needed
 
-        # If the cell is blue or red and the time elapsed is greater than the update interval
-        if self.color in (BLUE, RED):
-            time_elapsed = current_time - self.last_update_time
+        # # If the cell is blue or red and the time elapsed is greater than the update interval
+        # if self.color in (BLUE, RED):
+        #     time_elapsed = current_time - self.last_update_time
             
-            if time_elapsed >= dynamic_update_interval:
-                self.counter += 1  # Increment by 1
-                self.last_update_time = current_time  # Update last_update_time
+        #     if time_elapsed >= dynamic_update_interval:
+        #         self.counter += 1  # Increment by 1
+        #         self.last_update_time = current_time  # Update last_update_time
 
     def check_click(self, mouse_pos):
         # Function to check if the mouse click is inside this circle
@@ -101,10 +101,10 @@ class Cell:
         inside = (dx * dx + dy * dy) <= (self.radius * self.radius)
 
         # Only print when there's a positive click inside or debug when it's outside
-        if inside:
-            print(f"Mouse inside circle at {self.position}")
-        else:
-            print(f"Mouse NOT INSIDE circle at {self.position}")
+        # if inside:
+        #     print(f"Mouse inside circle at {self.position}")
+        # else:
+        #     print(f"Mouse NOT INSIDE circle at {self.position}")
         return inside
 
 

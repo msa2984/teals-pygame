@@ -17,11 +17,11 @@ screen = pygame.display.set_mode((width, height))
 
 # Create a list of circles
 cells = [
-    Cell((150, 150), 50, RED, counter=1),  # Red circle at (150, 150)
-    Cell((600, 150), 50, RED, counter=1),  # Red circle at (600, 150)
-    Cell((500, 200), 40, GRAY, counter=3),  # Green circle at (500, 200)
-    Cell((300, 300), 90, BLUE, counter=1),  # Blue circle at (300, 300)
-    Cell((100, 300), 40, BLUE, counter=1),  # Blue circle at (100, 300)
+    Cell((150, 150), 50, BLUE, counter=40),  # Red circle at (150, 150)
+    Cell((600, 150), 50, BLUE, counter=30),  # Red circle at (600, 150)
+    Cell((500, 200), 40, BLUE, counter=20),  # Green circle at (500, 200)
+    Cell((300, 300), 90, BLUE, counter=10),  # Blue circle at (300, 300)
+    Cell((100, 300), 40, BLUE, counter=10),  # Blue circle at (100, 300)
 ]
 
 line_active = False  # Variable to track if the line is currently being drawn
@@ -30,6 +30,7 @@ start_pos = None
 highlighted_cells = []  # List to track which cells are currently highlighted
 selection_rect = None
 mini_cells = []  # List to track the mini cells
+transfer_list = []
 
 def check_selection(cells, selection_rect):
     selected_cells = []
@@ -76,7 +77,9 @@ while True:
                             cell.line_end = mouse_pos  # Store the cursor position to draw the line
                         elif len(highlighted_cells) >= 1:
                             # In your game loop, you now separate the transfer logic from mini-cell updates
-                            handle_transfer(highlighted_cells, cell, mini_cells)
+                            result = handle_transfer(highlighted_cells, cell, mini_cells)
+                            for item in result:
+                                transfer_list.append(item)
                     elif cell.color == GRAY and highlighted_cells:  # If clicked on a gray cell and any blue cells are highlighted
                         # line_active = enemy_cell_logic(highlighted_cells=highlighted_cells, line_active=line_active, cell=cell)
                         # spawn_and_move_mini_cells(highlighted_cells, cell, mini_cells)
@@ -150,7 +153,18 @@ while True:
 
     # In the update/draw section of your game loop
     if update_mini_cells(mini_cells, screen):
-        print("it returned true! :O")
+        # Sort the transfer_list by distance (ascending, so closer items come first)
+        transfer_list = sorted(transfer_list, key=lambda cell: cell.distance)
+        
+        if transfer_list:  # Ensure the list is not empty
+            # Apply target_count to the closest cell (first in the list)
+            closest_transfer = transfer_list[0]
+            closest_transfer.target_cell.counter += closest_transfer.target_count
+            print(f"Updated cell: {closest_transfer.target_cell}, Transfer amount: {closest_transfer.target_count}, Distance: {closest_transfer.distance}")
+            
+            # Remove the processed transfer from the list
+            transfer_list.pop(0)
+
 
     # Get the current time in milliseconds
     current_time = pygame.time.get_ticks()
