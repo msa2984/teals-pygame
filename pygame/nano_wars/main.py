@@ -5,7 +5,7 @@ from models.cell import Cell
 from models.mini_cell import MiniCell, spawn_and_move_mini_cells
 from constants.color import RED, BLUE, GRAY
 from logic.enemy_cell import enemy_cell_logic
-from logic.friendly_cell import friendly_cell_logic
+from logic.friendly_cell import friendly_cell_logic, handle_transfer, update_mini_cells
 
 pygame.init()
 
@@ -75,8 +75,8 @@ while True:
                             cell.is_highlighted = True
                             cell.line_end = mouse_pos  # Store the cursor position to draw the line
                         elif len(highlighted_cells) >= 1:
-                            spawn_and_move_mini_cells(highlighted_cells, cell, mini_cells)
-                            line_active = friendly_cell_logic(highlighted_cells=highlighted_cells, line_active=line_active, cell=cell)
+                            # In your game loop, you now separate the transfer logic from mini-cell updates
+                            handle_transfer(highlighted_cells, cell, mini_cells)
                     elif cell.color == GRAY and highlighted_cells:  # If clicked on a gray cell and any blue cells are highlighted
                         line_active = enemy_cell_logic(highlighted_cells=highlighted_cells, line_active=line_active, cell=cell)
                         spawn_and_move_mini_cells(highlighted_cells, cell, mini_cells)
@@ -147,14 +147,12 @@ while True:
                             highlighted.line_end = None  # Stop drawing the line
                         highlighted_cells.clear()  # Clear the highlighted cells tracker
 
+    # In the update/draw section of your game loop
+    if update_mini_cells(mini_cells, screen):
+        print("it returned true! :O")
+
     # Get the current time in milliseconds
     current_time = pygame.time.get_ticks()
-    
-    for mini_cell in mini_cells[:]:
-        mini_cell.move()
-        mini_cell.draw(screen)
-        if mini_cell.reached_target():
-            mini_cells.remove(mini_cell)
         
     # Draw all the cells (circles)
     for cell in cells:

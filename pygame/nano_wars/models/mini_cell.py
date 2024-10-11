@@ -1,9 +1,10 @@
 import math
 import pygame
 from constants.color import BLUE
+from models.cell import Cell
 
 class MiniCell:
-    def __init__(self, start_pos, target_pos, color, speed=5):
+    def __init__(self, start_pos, target_pos, color, speed=1):
         self.pos = list(start_pos)  # Current position of the mini cell
         self.target_pos = target_pos  # Target position of the mini cell
         self.color = BLUE
@@ -26,16 +27,17 @@ class MiniCell:
 
     def reached_target(self):
         # Check if the mini cell has reached the target position
-        return math.dist(self.pos, self.target_pos) < self.radius
-
+        result = math.dist(self.pos, self.target_pos) < self.radius
+        print(result)
+        return result
+    
     def draw(self, screen):
         pygame.draw.circle(screen, self.color, (int(self.pos[0]), int(self.pos[1])), self.radius)
     
 
-def spawn_and_move_mini_cells(highlighted_cell, target_cell, mini_cells: list):
-    for cell in highlighted_cell:
-        start_pos = cell.position
-        target_pos = target_cell.position
-        mini_cell = MiniCell(start_pos, target_pos, cell.color)
-        mini_cells.append(mini_cell)
+def spawn_and_move_mini_cells(cell: Cell, target_cell: Cell, mini_cells: list):
+    start_pos = cell.position
+    target_pos = target_cell.position
+    mini_cell = MiniCell(start_pos, target_pos, cell.color)
+    mini_cells.append(mini_cell)
 
