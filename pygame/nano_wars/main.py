@@ -5,7 +5,7 @@ from models.cell import Cell
 from models.mini_cell import MiniCell, spawn_and_move_mini_cells
 from constants.color import RED, BLUE, GRAY
 from logic.enemy_cell import enemy_cell_logic
-from logic.friendly_cell import friendly_cell_logic, handle_transfer, update_mini_cells
+from logic.friendly_cell import handle_transfer, update_mini_cells
 
 pygame.init()
 
@@ -78,8 +78,9 @@ while True:
                             # In your game loop, you now separate the transfer logic from mini-cell updates
                             handle_transfer(highlighted_cells, cell, mini_cells)
                     elif cell.color == GRAY and highlighted_cells:  # If clicked on a gray cell and any blue cells are highlighted
-                        line_active = enemy_cell_logic(highlighted_cells=highlighted_cells, line_active=line_active, cell=cell)
-                        spawn_and_move_mini_cells(highlighted_cells, cell, mini_cells)
+                        # line_active = enemy_cell_logic(highlighted_cells=highlighted_cells, line_active=line_active, cell=cell)
+                        # spawn_and_move_mini_cells(highlighted_cells, cell, mini_cells)
+                        handle_transfer(highlighted_cells, cell, mini_cells)
                     elif cell.color == RED and highlighted_cells:
                         line_active = enemy_cell_logic(highlighted_cells=highlighted_cells, line_active=line_active, cell=cell)
                         spawn_and_move_mini_cells(highlighted_cells, cell, mini_cells)

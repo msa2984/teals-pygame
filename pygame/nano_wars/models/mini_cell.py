@@ -14,11 +14,16 @@ class MiniCell:
 
     def calculate_direction(self):
         # Calculate the direction vector towards the target
+        distance, dx, dy = self.calculate_distance()
+        print(f"DISTANCE: {distance}")
+        return (dx / distance, dy / distance) if distance != 0 else (0, 0)
+    
+    def calculate_distance(self):
         dx = self.target_pos[0] - self.pos[0]
         dy = self.target_pos[1] - self.pos[1]
         distance = math.sqrt(dx**2 + dy**2)
-        print(f"DISTANCE: {distance}")
-        return (dx / distance, dy / distance) if distance != 0 else (0, 0)
+        self.distance = distance
+        return distance, dx, dy
 
     def move(self):
         # Move the mini cell in the direction of the target
@@ -28,7 +33,7 @@ class MiniCell:
     def reached_target(self):
         # Check if the mini cell has reached the target position
         result = math.dist(self.pos, self.target_pos) < self.radius
-        print(result)
+        # print(result)
         return result
     
     def draw(self, screen):
@@ -40,4 +45,5 @@ def spawn_and_move_mini_cells(cell: Cell, target_cell: Cell, mini_cells: list):
     target_pos = target_cell.position
     mini_cell = MiniCell(start_pos, target_pos, cell.color)
     mini_cells.append(mini_cell)
+    return mini_cell
 
