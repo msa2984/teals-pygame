@@ -53,13 +53,6 @@ def handle_transfer(highlighted_cells, target_cell, mini_cells):
 
             # Subtract the total transfer amount from the gray cell
             target_cell.counter += total_transfer  # This will allow it to go negative
-
-    mini_cells.sort(key=lambda mc: mc.distance)
-
-    # Print mini-cells in sorted order by distance
-    print("Mini-cells sorted by distance:")
-    for mini_cell in mini_cells:
-        print(f"MiniCell at {mini_cell.pos} | Distance: {mini_cell.distance}")
         
     return total_transfer
 
@@ -67,6 +60,7 @@ def handle_transfer(highlighted_cells, target_cell, mini_cells):
 def update_mini_cells(mini_cells, screen):
     # Iterate over mini-cells and update them
     for mini_cell in mini_cells[:]:  # Use slice to safely remove during iteration
+        # print(mini_cell.distance)
         mini_cell.move()
         mini_cell.draw(screen)
         if mini_cell.reached_target():
