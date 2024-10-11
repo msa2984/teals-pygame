@@ -150,20 +150,22 @@ while True:
                             highlighted.is_highlighted = False  # Remove highlighting
                             highlighted.line_end = None  # Stop drawing the line
                         highlighted_cells.clear()  # Clear the highlighted cells tracker
-
-    # In the update/draw section of your game loop
-    if update_mini_cells(mini_cells, screen):
-        # Sort the transfer_list by distance (ascending, so closer items come first)
-        transfer_list = sorted(transfer_list, key=lambda cell: cell.distance)
+                        
+    update_mini_cells(mini_cells, screen)
         
-        if transfer_list:  # Ensure the list is not empty
-            # Apply target_count to the closest cell (first in the list)
-            closest_transfer = transfer_list[0]
-            closest_transfer.target_cell.counter += closest_transfer.target_count
-            print(f"Updated cell: {closest_transfer.target_cell}, Transfer amount: {closest_transfer.target_count}, Distance: {closest_transfer.distance}")
+    # # In the update/draw section of your game loop
+    # if update_mini_cells(mini_cells, screen):
+    #     # Sort the transfer_list by distance (ascending, so closer items come first)
+    #     transfer_list = sorted(transfer_list, key=lambda cell: cell.distance)
+        
+    #     if transfer_list:  # Ensure the list is not empty
+    #         # Apply target_count to the closest cell (first in the list)
+    #         closest_transfer = transfer_list[0]
+    #         closest_transfer.target_cell.counter += closest_transfer.target_count
+    #         print(f"Updated cell: {closest_transfer.target_cell}, Transfer amount: {closest_transfer.target_count}, Distance: {closest_transfer.distance}")
             
-            # Remove the processed transfer from the list
-            transfer_list.pop(0)
+    #         # Remove the processed transfer from the list
+    #         transfer_list.pop(0)
 
 
     # Get the current time in milliseconds

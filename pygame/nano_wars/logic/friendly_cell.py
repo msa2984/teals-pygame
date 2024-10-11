@@ -42,23 +42,25 @@ def handle_transfer(highlighted_cells, target_cell, mini_cells) -> list[Transfer
     
     for highlighted in highlighted_cells:
         if highlighted.counter >= 2:
-            mini_cell = spawn_and_move_mini_cells(highlighted, target_cell, mini_cells)  # Spawn mini-cells
             transfer_amount = highlighted.counter // 2
+            spawn_and_move_mini_cells(highlighted, target_cell, mini_cells, transfer_total=transfer_amount)  # Spawn mini-cells
+            
             highlighted.counter -= transfer_amount
 
             # Create a Transfer object and append to the list
-            transfer_obj = Transfer(target_count=transfer_amount, target_cell=target_cell, source_minicell=mini_cell, distance=mini_cell.distance)
-            transfer_obj_list.append(transfer_obj)
+            # transfer_obj = Transfer(target_count=transfer_amount, target_cell=target_cell, source_minicell=mini_cell, distance=mini_cell.distance)
+            # transfer_obj_list.append(transfer_obj)
     return transfer_obj_list  # Return the list of Transfer objects
 
 # This function should manage the movement and drawing of mini-cells
-def update_mini_cells(mini_cells, screen):
+def update_mini_cells(mini_cells: list[MiniCell], screen):
     # Iterate over mini-cells and update them
     for mini_cell in mini_cells[:]:  # Use slice to safely remove during iteration
         # print(mini_cell.distance)
         mini_cell.move()
         mini_cell.draw(screen)
         if mini_cell.reached_target():
+            mini_cell.target_cell.counter += mini_cell.transfer_total
             print("reached target")
             mini_cells.remove(mini_cell)
             return True

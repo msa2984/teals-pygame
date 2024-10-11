@@ -4,13 +4,15 @@ from constants.color import BLUE
 from models.cell import Cell
 
 class MiniCell:
-    def __init__(self, start_pos, target_pos, color, speed=1):
+    def __init__(self, start_pos, target_pos, color, transfer_total, target_cell, speed=1):
         self.pos = list(start_pos)  # Current position of the mini cell
         self.target_pos = target_pos  # Target position of the mini cell
         self.color = BLUE
         self.radius = 5  # Radius of the mini cell
         self.speed = speed  # Movement speed
         self.direction = self.calculate_direction()  # Direction towards the target
+        self.transfer_total = transfer_total
+        self.target_cell = target_cell
 
     def calculate_direction(self):
         # Calculate the direction vector towards the target
@@ -36,14 +38,33 @@ class MiniCell:
         # print(result)
         return result
     
+    def get_radius(self):
+        # Calculate the radius based on transfer_total
+        return max(5, self.radius + self.transfer_total)  # Adjust the scaling factor as needed
+    
     def draw(self, screen):
-        pygame.draw.circle(screen, self.color, (int(self.pos[0]), int(self.pos[1])), self.radius)
+        # Draw the mini cell as a circle
+        radius = self.get_radius()  # Get the dynamic radius
+        pygame.draw.circle(screen, self.color, (int(self.pos[0]), int(self.pos[1])), radius)
+        
+        # Draw the transfer_total slightly above the mini cell
+        font = pygame.font.SysFont(None, 24)  # You can adjust the font size
+        text_surface = font.render(str(self.transfer_total), True, (255, 255, 255))  # White color for text
+        
+        # Calculate text position (slightly above the circle)
+        text_x = int(self.pos[0])  # Center horizontally
+        text_y = int(self.pos[1]) - radius - 5  # Adjust this value to move the text higher or lower
+        text_rect = text_surface.get_rect(center=(text_x, text_y))  # Center the text above the mini cell
+        
+        # Draw the text on the screen
+        screen.blit(text_surface, text_rect)
+
     
 
-def spawn_and_move_mini_cells(cell: Cell, target_cell: Cell, mini_cells: list):
+def spawn_and_move_mini_cells(cell: Cell, target_cell: Cell, mini_cells: list, transfer_total: int):
     start_pos = cell.position
     target_pos = target_cell.position
-    mini_cell = MiniCell(start_pos, target_pos, cell.color)
+    mini_cell = MiniCell(start_pos=start_pos, target_pos=target_pos, color=cell.color, transfer_total=transfer_total, target_cell=target_cell)
     mini_cells.append(mini_cell)
     return mini_cell
 
