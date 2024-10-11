@@ -8,7 +8,7 @@ class MiniCell:
         self.pos = list(start_pos)  # Current position of the mini cell
         self.target_pos = target_pos  # Target position of the mini cell
         self.color = BLUE
-        self.radius = 5  # Radius of the mini cell
+        self.radius = 50  # Radius of the mini cell
         self.speed = speed  # Movement speed
         self.direction = self.calculate_direction()  # Direction towards the target
         self.transfer_total = transfer_total
@@ -39,8 +39,11 @@ class MiniCell:
         return result
     
     def get_radius(self):
-        # Calculate the radius based on transfer_total
-        return max(5, self.radius + self.transfer_total)  # Adjust the scaling factor as needed
+        # Scale the radius based on transfer_total proportionally
+        scaling_factor = self.radius / 100 / 1.11 # Assuming 100 corresponds to the full radius
+        scaled_radius = scaling_factor * self.transfer_total
+        return scaled_radius if scaled_radius < self.radius else self.radius
+
     
     def draw(self, screen):
         # Draw the mini cell as a circle

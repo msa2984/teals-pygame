@@ -38,6 +38,12 @@ class Cell:
         if self.is_highlighted:
             pygame.draw.circle(screen, self.highlight_color, self.position, self.radius + 5, 5)
 
+        capped_counter = min(self.counter, 100)  # Cap the counter at 100
+        if capped_counter >= 1:  # Ensure the counter is at least 1 to make the circle visible
+            inner_radius = (capped_counter / 100) * (self.radius / 4)  # Scale to 1/4 the size of the main circle at max
+            if inner_radius > 0:
+                pygame.draw.circle(screen, (169, 169, 169), self.position, int(inner_radius))  # Gray smaller circle
+
         # Draw the line from the edge of the circle to the cursor
         if self.line_end:
             edge_position = self.get_edge_position(self.line_end)
@@ -74,6 +80,7 @@ class Cell:
             if distance_to_edge > self.radius:
                 pygame.draw.line(screen, (255, 255, 255), edge_position, self.line_end, 2)
 
+
         # Render the counter as text inside the circle
         number = str(self.counter)
         text_surface = self.font.render(number, True, self.text_color)
@@ -89,10 +96,26 @@ class Cell:
         # If the cell is blue or red and the time elapsed is greater than the update interval
         if self.color in (BLUE, RED):
             time_elapsed = current_time - self.last_update_time
-            
+
             if time_elapsed >= dynamic_update_interval:
-                self.counter += 1  # Increment by 1
+                if self.counter >= 100:
+                    # If counter is above 100, decrease it slowly
+                    self.counter -= 0.5  # Decrease by 0.5 each update to make it gradual
+                    self.counter = max(100, self.counter)  # Ensure counter doesn't go below 100
+                else:
+                    self.counter += 1  # Increment by 1 if it's below 100
+
+                self.counter = int(self.counter)  # Ensure the counter is displayed as a whole number
                 self.last_update_time = current_time  # Update last_update_time
+
+        # Change text color to yellow if counter is 100 or above
+        if self.counter >= 100:
+            self.text_color = (255, 255, 0)  # Yellow text color
+        else:
+            self.text_color = (255, 255, 255)  # Default white text color
+
+
+
 
     def check_click(self, mouse_pos):
         # Function to check if the mouse click is inside this circle
